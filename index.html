@@ -244,6 +244,20 @@ h1{
 }
 .live-note{margin:0;font-size:12.5px;color:var(--ink-dim)}
 
+/* 팔로우 안내 */
+.follow{
+  border-top:1px solid var(--sh);padding-top:12px;
+  display:flex;flex-direction:column;gap:8px;align-items:flex-start;
+}
+.follow-text{font-size:13.5px;color:var(--ink)}
+.ig{
+  display:inline-flex;align-items:center;gap:7px;
+  text-decoration:none;color:var(--ink);
+  font-family:var(--tty);font-weight:700;font-size:13.5px;
+  word-break:break-all;
+}
+.ig svg{flex:none}
+
 /* ── 작업 표시줄 ── */
 .taskbar{
   position:fixed;left:0;right:0;bottom:0;z-index:50;
@@ -551,6 +565,18 @@ h1{
         <div class="live-clock" id="clock">&mdash;</div>
         <p class="live-note" id="liveNote"></p>
       </div>
+      <div class="follow">
+        <span class="follow-text" id="followText"></span>
+        <a class="btn ig" id="igLink" href="#" target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+            <rect x="1.6" y="1.6" width="12.8" height="12.8" rx="3.6"
+                  fill="none" stroke="currentColor" stroke-width="1.5"></rect>
+            <circle cx="8" cy="8" r="3.1" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+            <circle cx="11.7" cy="4.3" r="1" fill="currentColor"></circle>
+          </svg>
+          <span id="igName"></span>
+        </a>
+      </div>
     </div>
     <div class="winfoot">
       <span class="panel grow" id="footNote"></span>
@@ -615,6 +641,9 @@ const CONFIG = {
   WEEKS: 2,              // 몇 주에 한 번 바꿀지
   ROTATION: ["a","b","c","d","e","f","g","h","i"],   // 나오는 순서. 마지막까지 가면 처음으로 돌아갑니다
 
+  // 해제 화면에 뜨는 인스타그램 계정 (@ 없이 아이디만)
+  INSTAGRAM: "roomexcape_black_white",
+
   // 정답은 소금(SALT)을 앞에 붙여 SHA-256 으로만 저장합니다.
   // 소스를 뜯어봐도 정답 글자는 나오지 않습니다.
   SALT: "excape-white-2f:",
@@ -670,9 +699,10 @@ const T = {
     taskCleared: "잠금 해제됨",
 
     clearedTitle: "잠금이 열렸습니다",
-    where: "위층 2층 <b>룸익스케이프 화이트점</b>에 방문하셔서",
+    where: "신촌 <b>룸익스케이프 화이트점</b>에 방문하셔서",
     what: "이 화면을 직원에게 보여주세요. <b>비밀 할인</b>을 진행해 드립니다.",
-    small: "예약하실 때 또는 결제 전에 보여주시면 됩니다.",
+    small: "결제 전에 보여주시면 됩니다.",
+    follow: "더 많은 문제를 풀어보고 싶다면 팔로우해 주세요",
     liveLabel: "화면 인증",
     liveNote: "이 시계는 실시간으로 움직입니다. 캡처한 사진은 시간이 멈춰 있습니다.",
 
@@ -724,9 +754,10 @@ const T = {
     taskCleared: "Unlocked",
 
     clearedTitle: "The lock is open",
-    where: "Come up to <b>Room Excape White</b> on the 2nd floor",
+    where: "Visit <b>Room Excape White</b> in Sinchon",
     what: "and show this screen to our staff. We will give you a <b>secret discount</b>.",
-    small: "Show it when you book, or before you pay.",
+    small: "Show it before you pay.",
+    follow: "Want more puzzles like this? Follow us.",
     liveLabel: "Live screen",
     liveNote: "This clock is running right now. A screenshot would be frozen.",
 
@@ -933,6 +964,9 @@ function render() {
   $("msgSmall").textContent = s.small;
   $("liveLabel").textContent = s.liveLabel;
   $("liveNote").textContent = s.liveNote;
+  $("followText").textContent = s.follow;
+  $("igName").textContent = "@" + CONFIG.INSTAGRAM;
+  $("igLink").href = "https://www.instagram.com/" + CONFIG.INSTAGRAM + "/";
   $("footBrand").textContent = s.footBrand;
   $("footNote").textContent = s.footNote;
   $("startLabel").textContent = s.startLabel;
