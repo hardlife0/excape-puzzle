@@ -684,14 +684,18 @@ const CONFIG = {
   // 2주가 지날 때마다 ROTATION 의 다음 문제로 저절로 넘어갑니다.
   // 손님 폰의 시간대와 상관없이 모두 같은 문제를 보도록
   // 한국 시간(UTC+9) 자정을 기준으로 계산합니다.
-  START: [2026, 9, 7],   // 1회차 시작일 (월요일). [연, 월, 일]
+  // 1회차만 짧게: 09.21~10.02. 2회차부터 10.03(토)을 시작으로 2주씩.
+  // (START 는 1회차 끝 다음날에서 2주를 뺀 날짜입니다. 화면에 보이는 1회차
+  //  시작일은 FIRST_FROM 으로 따로 적습니다.)
+  START: [2026, 9, 19],  // 계산 기준일. [연, 월, 일]
+  FIRST_FROM: [2026, 9, 21], // 화면에 표시할 1회차 시작일
   WEEKS: 2,              // 몇 주에 한 번 바꿀지
   // 나오는 순서. 마지막 문제까지 가면 새 문제를 넣을 때까지 마지막 문제가 계속 나오고,
   // "다음 문제까지" 칸은 "준비 중"으로 바뀝니다.
-  //   a 반쪽 글자  09.07~09.20      h 한 조각도 없다 10.19~11.01     c 육각형 11.30~12.13
-  //   b 피라미드   09.21~10.04      g 겹친 조각      11.02~11.15     f 별     12.14~12.27
-  //   d 시계       10.05~10.18      e 화살표         11.16~11.29     i 물고기 12.28~01.10
-  ROTATION: ["a","b","d","h","g","e","c","f","i"],
+  //   1 b 피라미드   09.21~10.02     4 g 겹친 조각  10.31~11.13     7 f 별     12.12~12.25
+  //   2 d 시계       10.03~10.16     5 e 화살표     11.14~11.27     8 i 물고기 12.26~01.08
+  //   3 h 한 조각도  10.17~10.30     6 c 육각형     11.28~12.11
+  ROTATION: ["b","d","h","g","e","c","f","i"],
 
   // 해제 화면에 뜨는 인스타그램 계정 (@ 없이 아이디만)
   INSTAGRAM: "roomexcape_black_white",
@@ -1060,7 +1064,9 @@ function render() {
 
 function refresh() {
   const s = t();
-  const from = roundStart(round);
+  const from = (round === 0 && CONFIG.FIRST_FROM)
+    ? Date.UTC(CONFIG.FIRST_FROM[0], CONFIG.FIRST_FROM[1] - 1, CONFIG.FIRST_FROM[2]) - KST
+    : roundStart(round);
   const until = roundStart(round + 1);
   const left = Math.max(0, Math.ceil((until - Date.now()) / 86400e3));
 
